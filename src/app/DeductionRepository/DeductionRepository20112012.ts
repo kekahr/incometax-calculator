@@ -9,9 +9,9 @@ export class DeductionRepository20112012 extends DeductionRepository20102011
     }  
 
     getSection80CCF() : TaxSection { 
-        var section80CCF : TaxSection = new TaxSection("80CCF",20000);
+        var section80CCF : TaxSection = new TaxSection("80CCF", 20000);
         section80CCF.deductions.push(
-            new Deduction ( "80CCF" , "longTermInfBonds", true , 0 , "LTIB", "Long-term infrastructure bonds (u/s 80CCF)")
+            new Deduction("80CCF", "longTermInfBonds", 0, "LTIB", "Long-term infrastructure bonds (u/s 80CCF)")
         );
         return section80CCF;           
     }

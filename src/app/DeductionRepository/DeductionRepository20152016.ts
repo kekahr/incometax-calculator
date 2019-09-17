@@ -19,4 +19,10 @@ export class DeductionRepository20152016 extends DeductionRepository20142015
         section24.maxLimit = 200000;
         return section24;
     }
+
+    getSection80CCE() : TaxSection {
+        var section80CCE : TaxSection = super.getSection80CCE();
+        section80CCE.maxLimit = 150000;
+        return section80CCE; 
+    }
 }

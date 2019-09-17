@@ -7,8 +7,8 @@ export class IncomeTaxRepository20192020 extends IncomeTaxRepository20182019
         super();
     }
 
-    getCESSSlab() : CESS{
-        return new CESS(4,0,false);
+    getCESSSlab() : CESS {
+        return new CESS(4, 0, false);
     }
     
 }

@@ -25,7 +25,7 @@ export class TaxCalculator
     totalTaxAfterRebate : number;
     surcharge : number;
     educationalCESS : number;
-    secondaryCESS: number;
+    secondaryCESS : number;
     totalTaxLiable : number;
 
     constructor(){
@@ -33,7 +33,12 @@ export class TaxCalculator
         this.taxLiableAtSpecialRate = 0;
     }
 
-    getincomeTaxRepository(assessmentYear){
+    /**
+     * 
+     * @param assessmentYear 
+     * Given an Assessment Year, returns the respective IncomeTaxRepository.
+     */
+    getincomeTaxRepository(assessmentYear : number){
         switch(assessmentYear)
         {
             case 2010 : this.incomeTaxRepository = new IncomeTaxRepository20102011(); break;
@@ -50,25 +55,41 @@ export class TaxCalculator
         }
     }
 
-    calculateNormalTax(TaxableIncome : number,assessmentYear : number,agriculturalIncome : number,category : string) : number {
+    /**
+     * 
+     * @param TaxableIncome 
+     * @param assessmentYear 
+     * @param agriculturalIncome 
+     * @param category 
+     * Given Total Taxable Income and Agricultural Income , Returns the normal tax amount amount by 
+     * considering the agricultural income based on Assessment Year and Category of individual.
+     */
+
+    calculateNormalTax(TaxableIncome : number, assessmentYear : number, agriculturalIncome : number, category : string) : number {
         this.getincomeTaxRepository(assessmentYear);
         let ceilSlabLimit : number = 0;
-        this.incomeTaxRepository.getAgriculturalCeilLimit().forEach(agriculturalSlabcategory =>{
+        this.incomeTaxRepository.getAgriculturalCeilLimit().forEach(agriculturalSlabcategory => {
             if(agriculturalSlabcategory.category == category)
                 ceilSlabLimit = agriculturalSlabcategory.ceilLimit;
         });
         if(TaxableIncome >= ceilSlabLimit)
         {
-            let taxOnIncomeAndAgriculture : number = this.calculateLiableTax(TaxableIncome+agriculturalIncome,category);
-            let taxOnAgricultureAndCeilSlab : number = this.calculateLiableTax(agriculturalIncome+ceilSlabLimit,category);
+            let taxOnIncomeAndAgriculture : number = this.calculateLiableTax(TaxableIncome + agriculturalIncome, category);
+            let taxOnAgricultureAndCeilSlab : number = this.calculateLiableTax(agriculturalIncome + ceilSlabLimit, category);
             return taxOnIncomeAndAgriculture - taxOnAgricultureAndCeilSlab;
         }
         return 0;
     }
 
-    calculateLiableTax(TaxableIncome : number,category : string) : number {
-        let taxLiable :number= 0;
-        this.incomeTaxRepository.getIncomeTaxSlab().forEach(slabCategory =>{
+    /**
+     * 
+     * @param TaxableIncome 
+     * @param category 
+     * Given the Total Taxable Income, Returns the tax by applying the respective tax Slabs on Taxable Income based on Category.
+     */
+    calculateLiableTax(TaxableIncome : number, category : string) : number {
+        let taxLiable : number= 0;
+        this.incomeTaxRepository.getIncomeTaxSlab().forEach(slabCategory => {
             if(slabCategory.category == category)
                 slabCategory.taxslab.forEach(taxslab => {
                     taxLiable += taxslab.runIncomeTaxResult(TaxableIncome);
@@ -77,41 +98,49 @@ export class TaxCalculator
         return taxLiable;
     }
 
-    calculateSpecialTax(incomeFromCapital : IncomeFromCapitalGains,incomeFromOtherSource : IncomeFromOtherSources,incomeTaxCalculator : FormGroup){
-        let assessmentYear : number = incomeTaxCalculator.get('assessmentYear').value =="Select" ? 2020 : incomeTaxCalculator.get('assessmentYear').value;
+    /**
+     * 
+     * @param incomeFromCapital 
+     * @param incomeFromOtherSource 
+     * @param incomeTaxCalculator 
+     * Given the Objects of Classes IncomeFromCapitalGains and IncomeFromOtherSorces, Returns the amount of special Tax
+     * on Capital Gains and Winnings from Lottery by using their respective values from Objects
+     */
+    calculateSpecialTax(incomeFromCapital : IncomeFromCapitalGains, incomeFromOtherSource : IncomeFromOtherSources, incomeTaxCalculator : FormGroup){
+        let assessmentYear : number = incomeTaxCalculator.get('assessmentYear').value == "Select" ? 2020 : incomeTaxCalculator.get('assessmentYear').value;
         this.getincomeTaxRepository(assessmentYear);
-        let shortTermCapitalSpecial = 0, longTermCapitalSpecial1 = 0, longTermCapitalSpecial2 =0 , winningsFromLottery = 0;
-        let taxShortTermCapitalSpecial = 0,taxLongTermCapitalSpecial1 =0 ,taxLongTermCapitalSpecial2 =0, taxWinningsFromLottery =0;
-        let ceilLimit = 0;
-        this.incomeTaxRepository.getAgriculturalCeilLimit().forEach(agriculturalSlabcategory =>{
+        let shortTermCapitalSpecial = 0, longTermCapitalSpecial1 = 0, longTermCapitalSpecial2 = 0, winningsFromLottery = 0;
+        let taxShortTermCapitalSpecial = 0, taxLongTermCapitalSpecial1 = 0,taxLongTermCapitalSpecial2 = 0, taxWinningsFromLottery = 0;
+        let ceilLimit : number = 0;
+        this.incomeTaxRepository.getAgriculturalCeilLimit().forEach(agriculturalSlabcategory => {
             if(agriculturalSlabcategory.category == incomeTaxCalculator.get('category').value)
-                ceilLimit = agriculturalSlabcategory.ceilLimit;
+                ceilLimit = agriculturalSlabcategory.ceilLimit;     //Ceil Limit of agriculture is same as capital Gains eg: 2,50,000 in AY 2020-21
         });
         let excessIncome = incomeTaxCalculator.get('netTaxableIncome').value - ceilLimit - incomeFromOtherSource.incomeAtSpecialRate;
         if(excessIncome > 0)
         {
-            longTermCapitalSpecial2 = Math.min(excessIncome,incomeFromCapital.longTermCapitalGainsSpecial2);
+            longTermCapitalSpecial2 = Math.min(excessIncome, incomeFromCapital.longTermCapitalGainsSpecial2);
             excessIncome = excessIncome - longTermCapitalSpecial2;
             if(excessIncome > 0)
             {
-            shortTermCapitalSpecial = Math.min(excessIncome,incomeFromCapital.shortTermCapitalGainsSpecial);
+            shortTermCapitalSpecial = Math.min(excessIncome, incomeFromCapital.shortTermCapitalGainsSpecial);
             excessIncome = excessIncome - shortTermCapitalSpecial;
             }
             if(excessIncome > 0)
             {
-            longTermCapitalSpecial1 = Math.min(excessIncome,incomeFromCapital.longTermCapitalGainsSpecial1);
+            longTermCapitalSpecial1 = Math.min(excessIncome, incomeFromCapital.longTermCapitalGainsSpecial1);
             }
         }
         winningsFromLottery = incomeFromOtherSource.incomeAtSpecialRate;
         
         taxWinningsFromLottery = incomeFromOtherSource.getTaxOnLotteryWinnings();
-        incomeFromCapital.capitalGains.forEach(capitalGains=>{
+        incomeFromCapital.capitalGains.forEach(capitalGains=> {
             if(capitalGains.title == "ShortTermSpecial")
-            taxShortTermCapitalSpecial = capitalGains.getTaxOnCapitalGains(shortTermCapitalSpecial);
+                taxShortTermCapitalSpecial = capitalGains.getTaxOnCapitalGains(shortTermCapitalSpecial);
             else if(capitalGains.title == "LongTermSpecial1")
-            taxLongTermCapitalSpecial1 = capitalGains.getTaxOnCapitalGains(longTermCapitalSpecial1);
+                taxLongTermCapitalSpecial1 = capitalGains.getTaxOnCapitalGains(longTermCapitalSpecial1);
             else if(capitalGains.title == "LongTermSpecial2")
-            taxLongTermCapitalSpecial2 = capitalGains.getTaxOnCapitalGains(longTermCapitalSpecial2);
+                taxLongTermCapitalSpecial2 = capitalGains.getTaxOnCapitalGains(longTermCapitalSpecial2);
         });
         incomeTaxCalculator.get('taxSpecailRate').patchValue({
             shortTermCapitalGainsSpecialTotal : shortTermCapitalSpecial,
@@ -125,52 +154,74 @@ export class TaxCalculator
         });
     }
 
-    calculateSurcharge(TaxableIncome : number,category : string) : number{
+    /**
+     * 
+     * @param TaxableIncome 
+     * @param category 
+     * Given the Taxable Income and by using Total Tax after Rebate ,returns the amount of Surcharge by applying 
+     * Surcharge slab rates and deducting Marginal Relief if present.
+     */
+    calculateSurcharge(TaxableIncome : number,category : string) : number {
         let applicableRate : number = 0;
         this.incomeTaxRepository.getSurchargeSlab().forEach(taxslab => {
             if(taxslab.getSurchargeRate(TaxableIncome))
                 applicableRate = taxslab.slabrate;
         });
-        let actualSurchargeOnTax : number = Math.round((this.totalTaxAfterRebate)*applicableRate/100);
-        let floorLimit : number = this.getFloorSlabLimitForSurcharge(TaxableIncome);
-        let taxLiableOnFloorLimit = this.calculateLiableTax(floorLimit,category);
+        let surchargeOnActualIncome : number = Math.round((this.totalTaxAfterRebate) * applicableRate / 100); 
+        let floorIncome : number = this.getFloorIncomeBasedOnSurcharge(TaxableIncome);    //Floor Income for given Income eg: for 50,10,000 Floor Income is 50,00,000
+        let taxLiableOnFloorIncome : number = this.calculateLiableTax(floorIncome, category);
         this.incomeTaxRepository.getSurchargeSlab().forEach(taxslab => {
-            if(taxslab.getSurchargeRate(floorLimit))
+            if(taxslab.getSurchargeRate(floorIncome))
                 applicableRate = taxslab.slabrate;
         });
-        let marginalsurchargeOnTax : number = Math.round((taxLiableOnFloorLimit)*applicableRate/100);
-        let differenceOfTax = this.totalTaxAfterRebate-taxLiableOnFloorLimit;
-        let differenceOfTaxBasedOnSurcharge = (this.totalTaxAfterRebate + actualSurchargeOnTax)-(taxLiableOnFloorLimit + marginalsurchargeOnTax);
-        let differenceOfTaxableIncomes = (TaxableIncome - floorLimit);
+        let surchargeOnFloorIncome : number = Math.round((taxLiableOnFloorIncome) * applicableRate / 100);
+        let differenceOfTax : number = this.totalTaxAfterRebate - taxLiableOnFloorIncome; //difference of actual tax and tax on floor Income
+        let differenceOfTaxableIncomes : number = (TaxableIncome - floorIncome);//difference of actual income and floor income.
+        let differenceOfTaxBasedOnSurcharge : number = (this.totalTaxAfterRebate + surchargeOnActualIncome) - (taxLiableOnFloorIncome + surchargeOnFloorIncome);
         if(differenceOfTaxableIncomes < differenceOfTaxBasedOnSurcharge)
-            return marginalsurchargeOnTax + differenceOfTaxableIncomes-differenceOfTax;
-        return actualSurchargeOnTax;
+            return surchargeOnFloorIncome + differenceOfTaxableIncomes-differenceOfTax;
+        return surchargeOnActualIncome;
     }
 
-    getFloorSlabLimitForSurcharge(TaxableIncome : number) : number{
-        let floorSlabLimit = 0; 
+    /**
+     * 
+     * @param TaxableIncome 
+     * Given Taxable Income, Returns the Floor Income based on Surcharge Slabs.
+     */
+    getFloorIncomeBasedOnSurcharge(TaxableIncome : number) : number {
+        let floorSlabLimit : number = 0; 
         this.incomeTaxRepository.getSurchargeSlab().forEach(taxslab => {
             if(taxslab.maxValue >= TaxableIncome && taxslab.minValue <= TaxableIncome)
-               { 
-                   floorSlabLimit = taxslab.minValue;
-               }
+                floorSlabLimit = taxslab.minValue;
         });
-        if(floorSlabLimit!=0)
-            return floorSlabLimit-1;
+        if(floorSlabLimit != 0)
+            return floorSlabLimit - 1;
         return floorSlabLimit;
     }
 
-    calculateTaxAfterRebate(TaxableIncome : number,assessmentYear: number) : number{
+    /**
+     * 
+     * @param TaxableIncome 
+     * @param assessmentYear
+     * Given Taxable Income and taken Tax before applying rebate, Returns the Tax by deducting rebate values if eligible.
+     */
+    calculateTaxAfterRebate(TaxableIncome : number, assessmentYear: number) : number {
         this.getincomeTaxRepository(assessmentYear);
         var totalTax : number = this.taxLiableAtSpecialRate + this.taxLiableAtNormalRate;
-        this.totalTaxAfterRebate = this.incomeTaxRepository.getRebateSlab().computeTaxAfterRebate(TaxableIncome,totalTax);
+        this.totalTaxAfterRebate = this.incomeTaxRepository.getRebateSlab().computeTaxAfterRebate(TaxableIncome, totalTax);
         return this.totalTaxAfterRebate;
     }
 
+    /**
+     * 
+     * @param assessmentYear 
+     * Taking tax and surcharge value, Returns the CESS and total Tax liable by applying CESS rates.
+     */
     calculateCESSAndTotalTax(assessmentYear : number){
         this.getincomeTaxRepository(assessmentYear);
         this.educationalCESS = this.incomeTaxRepository.getCESSSlab().computeEducationalCESS(this.totalTaxAfterRebate + this.surcharge);
         this.secondaryCESS = this.incomeTaxRepository.getCESSSlab().computeSecondaryCESS(this.totalTaxAfterRebate + this.surcharge);
-        this.totalTaxLiable = this.totalTaxAfterRebate + this.surcharge + this.educationalCESS+this.secondaryCESS;
+        this.totalTaxLiable = this.totalTaxAfterRebate + this.surcharge + this.educationalCESS + this.secondaryCESS;
     }
+    
 }

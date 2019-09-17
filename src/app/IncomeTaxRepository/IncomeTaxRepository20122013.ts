@@ -9,25 +9,25 @@ export class IncomeTaxRepository20122013 extends IncomeTaxRepository20112012
         super();
     }
 
-    getIncomeTaxSlab() : Array<SlabCategory>{
+    getIncomeTaxSlab() : Array<SlabCategory> {
         var incomeTaxSlab = super.getIncomeTaxSlab();
         incomeTaxSlab.find(slabCategory => slabCategory.category == "Male").taxslab = [
-                new TaxSlab(0, 0, 180000),
-                new TaxSlab(10, 180001, 500000),
-                new TaxSlab(20, 500001, 800000),
-                new TaxSlab(30, 800001,Number.MAX_VALUE)
+                new TaxSlab(0, 0, 180000), 
+                new TaxSlab(10, 180001, 500000), 
+                new TaxSlab(20, 500001, 800000), 
+                new TaxSlab(30, 800001, Number.MAX_VALUE)
             ];
         incomeTaxSlab.find(slabCategory => slabCategory.category == "Senior Citizen").taxslab = [
-                new TaxSlab(0,0,250000),
-                new TaxSlab(10, 250001, 500000),
-                new TaxSlab(20, 500001, 800000),
-                new TaxSlab(30, 800001,Number.MAX_VALUE)
+                new TaxSlab(0, 0, 250000), 
+                new TaxSlab(10, 250001, 500000), 
+                new TaxSlab(20, 500001, 800000), 
+                new TaxSlab(30, 800001, Number.MAX_VALUE)
             ];
         incomeTaxSlab.push(
-                new SlabCategory("Super Senior Citizen",[
-                    new TaxSlab(0,0,500000),
-                    new TaxSlab(20, 500001, 800000),
-                    new TaxSlab(30, 800001,Number.MAX_VALUE)])
+                new SlabCategory("Super Senior Citizen", [
+                    new TaxSlab(0, 0, 500000), 
+                    new TaxSlab(20, 500001, 800000), 
+                    new TaxSlab(30, 800001, Number.MAX_VALUE)])
         );
         return incomeTaxSlab;
     }
@@ -37,7 +37,7 @@ export class IncomeTaxRepository20122013 extends IncomeTaxRepository20112012
         agriculturalCeil.find(agricultaralCeilCategory => agricultaralCeilCategory.category == "Male").ceilLimit = 180000;
         agriculturalCeil.find(agricultaralCeilCategory => agricultaralCeilCategory.category == "Senior Citizen").ceilLimit = 250000;
         agriculturalCeil.push(
-            new AgricultaralCeilCategory("Super Senior Citizen",500000),
+            new AgricultaralCeilCategory("Super Senior Citizen", 500000), 
             );
         return agriculturalCeil;
     }

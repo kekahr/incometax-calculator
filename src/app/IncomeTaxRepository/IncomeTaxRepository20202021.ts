@@ -7,7 +7,7 @@ export class IncomeTaxRepository20202021 extends IncomeTaxRepository20192020
         super();
     }
     
-    getRebateSlab() : Rebate{
-        return new Rebate(500000,12500);
+    getRebateSlab() : Rebate {
+        return new Rebate(500000, 12500);
     }
 }

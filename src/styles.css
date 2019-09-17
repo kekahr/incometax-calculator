@@ -1,17 +1,16 @@
-.font
-{
-    font-family: Arial;
-    font-size: 16px;
+.font{
+    font-family : Arial;
+    font-size : 16px;
 }
 
 table {
-    font-size: 13px;
+    font-size : 13px;
 }
 
 input{
-    text-align: right !important;
+    text-align : right !important;
 }
 
 button{
-    cursor: pointer;
+    cursor : pointer;
 }

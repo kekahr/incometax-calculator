@@ -1,5 +1,5 @@
 import { CapitalGains } from '../CapitalGains';
-import { FormGroup, FormArray } from '@angular/forms';
+import { FormGroup} from '@angular/forms';
 import { IncomeType } from './IncomeType';
 
 export class IncomeFromCapitalGains extends IncomeType
@@ -20,17 +20,18 @@ export class IncomeFromCapitalGains extends IncomeType
         this.longTermCapitalGainsSpecial2 = 0;
     }
 
-    initializeCapitalGains() {
+    initializeCapitalGains(){
         this.capitalGains.push(
-            new CapitalGains("ShortTermNormal","normal",0),
-            new CapitalGains("ShortTermSpecial","special",15),
-            new CapitalGains("LongTermSpecial1","special",20),
-            new CapitalGains("LongTermSpecial2","special",10)
+            new CapitalGains("ShortTermNormal", "normal", 0),
+            new CapitalGains("ShortTermSpecial", "special", 15),
+            new CapitalGains("LongTermSpecial1", "special", 20),
+            new CapitalGains("LongTermSpecial2", "special", 10)
         );
     }
 
-    categorizeCapitalGains(incomeTaxCalculator : FormGroup) : number{
-        this.capitalGains.forEach(capitalGain =>{
+    //Given Capital Gain Values, Categorizes and Computes total Capital Gains of each type.
+    categorizeCapitalGains(incomeTaxCalculator : FormGroup) : number {
+        this.capitalGains.forEach(capitalGain => {
             if(capitalGain.title == "ShortTermNormal")
                 this.shortTermCapitalGainsNormal = capitalGain.calculateTotalGain((incomeTaxCalculator.get('income').get('incomeCapitalGains').get('shortTermNormal').value));
             else if(capitalGain.title == "ShortTermSpecial")

@@ -17,8 +17,8 @@ export class IncomeTaxRepository20142015 extends IncomeTaxRepository20132014
         return surchargeSlab;
     }
     
-    getRebateSlab() : Rebate{
-        return new Rebate(500000,2000);
+    getRebateSlab() : Rebate {
+        return new Rebate(500000, 2000);
     }
 
 }

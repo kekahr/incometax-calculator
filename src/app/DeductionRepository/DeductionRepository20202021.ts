@@ -10,9 +10,9 @@ export class DeductionRepository20202021 extends DeductionRepository20192020
 
     
     getSection80EEA() : TaxSection {
-        var section80EEA : TaxSection = new TaxSection("80EEA",60000);
+        var section80EEA : TaxSection = new TaxSection("80EEA", 60000);
         section80EEA.deductions.push( 
-            new Deduction ("80EEA","interestOnHouseLoan",true,0,"InterestHouseLoan","Interest payable on loan for residentials house property (u/s 80EEA )")
+            new Deduction("80EEA", "interestOnHouseLoan", 0, "InterestHouseLoan", "Interest payable on loan for residentials house property (u/s 80EEA )")
         );
         return section80EEA;
     }
@@ -20,17 +20,18 @@ export class DeductionRepository20202021 extends DeductionRepository20192020
     getSection80EEB() : TaxSection {
         var section80EEB : TaxSection = new TaxSection("80EEB",60000);
         section80EEB.deductions.push( 
-            new Deduction ("80EEB","interestOnElectricVehicle",true,0,"InterestElectricVehicle","Interest payable on loan for purchase of electric vehicles(u/s 80EEB )")
+            new Deduction("80EEB", "interestOnElectricVehicle", 0, "InterestElectricVehicle", "Interest payable on loan for purchase of electric vehicles(u/s 80EEB )")
         );
         return section80EEB;
     }
 
-    // Section 80CCG is removed and Section 80EEA,80EEB are added
+    //Section 80CCG is removed and Section 80EEA,80EEB are added
     getAllTaxSections() : Array<TaxSection> {
         var taxsections : Array<TaxSection> = [];
         taxsections.push(
             this.getSection80C(),
             this.getSection80CCD(),
+            this.getSection80CCE(),
             this.getSection80CCD2(),
             this.getSection80D(),
             this.getSection80DDB(),

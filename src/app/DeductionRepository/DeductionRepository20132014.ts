@@ -1,6 +1,6 @@
 import { DeductionRepository20122013 } from './DeductionRepository20122013';
 import { TaxSection } from '../Models/TaxSection';
-import { Deduction } from '../Models/Deduction';
+import { Deduction, Deduction80CCG } from '../Models/Deduction';
 
 export class DeductionRepository20132014 extends DeductionRepository20122013
 {
@@ -12,25 +12,26 @@ export class DeductionRepository20132014 extends DeductionRepository20122013
     getSection80CCG() : TaxSection { 
         var section80CCG : TaxSection = new TaxSection("80CCG",25000);
         section80CCG.deductions.push(
-            new Deduction ( "80CCG" , "equity", true , 0 , "EQUITY", "Investment under equity saving scheme (u/s 80CCG)")
+            new Deduction80CCG("80CCG", "equity", 0 ,1000000, 50, "EQUITY", "Investment under equity saving scheme (u/s 80CCG)")
         );
         return section80CCG;           
     }
 
-    getSection80TTA() : TaxSection{
+    getSection80TTA() : TaxSection {
         var section80TTA : TaxSection = new TaxSection("80TTA",10000);
         section80TTA.deductions.push( 
-            new Deduction ( "80TTA", "interestOnDeposits80TTA" ,true, 0 ,"Interest on deposits in saving account (u/s 80TTA)")
+            new Deduction("80TTA", "interestOnDeposits80TTA", 0 ,"Interest on deposits in saving account (u/s 80TTA)")
         );
         return section80TTA;
     }
 
-    //removing Section 80CCF
+    //Section 80CCF is removed and 80CCG,80TTA are added.
     getAllTaxSections() : Array<TaxSection> {
-        var taxsections : Array<TaxSection> = [];
+        var taxsections : Array<TaxSection> = [];  
         taxsections.push(
             this.getSection80C(),
             this.getSection80CCD(),
+            this.getSection80CCE(),
             this.getSection80CCD2(),
             this.getSection80D(),
             this.getSection80DDB(),

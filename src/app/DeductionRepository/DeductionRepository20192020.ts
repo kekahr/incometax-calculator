@@ -15,9 +15,9 @@ export class DeductionRepository20192020 extends DeductionRepository20182019
     }
 
     getSection80TTB() : TaxSection {
-        var section80TTB : TaxSection = new TaxSection("80TTB",50000);
+        var section80TTB : TaxSection = new TaxSection("80TTB", 50000);
         section80TTB.deductions.push(
-            new Deduction ( "80TTB" , "interestOnDeposits80TTB", true , 0 , "80TTB", "Interest on deposits(u/s 80TTB)")
+            new Deduction("80TTB", "interestOnDeposits80TTB", 0, "80TTB", "Interest on deposits(u/s 80TTB)")
         );
         return section80TTB; 
     }

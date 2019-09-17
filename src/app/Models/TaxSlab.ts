@@ -4,13 +4,18 @@ export class TaxSlab
     maxValue : number;
     slabrate : number;
 
-    constructor(slabRate : number , minValue : number , maxValue : number){
+    constructor(slabRate : number, minValue : number, maxValue : number){
         this.minValue = minValue;
         this.maxValue = maxValue;
         this.slabrate = slabRate;
     }
 
-    runIncomeTaxResult(taxableIncome : number) : number{
+    /**
+     * 
+     * @param taxableIncome 
+     * Given Taxable Income, Returns the Tax computed for a Particular Tax Slab Range. 
+     */
+    runIncomeTaxResult(taxableIncome : number) : number {
         let amountTaxable = 0;
         if(taxableIncome >= this.minValue){
             if(taxableIncome <= this.maxValue)
@@ -18,12 +23,13 @@ export class TaxSlab
             else 
                 amountTaxable = this.maxValue - this.minValue; 
         }
-        return Math.round(amountTaxable*this.slabrate/100);
+        return Math.round(amountTaxable * this.slabrate / 100);
     }
 
-    getSurchargeRate(taxableIncome : number) : boolean{
+    getSurchargeRate(taxableIncome : number) : boolean {
         if(taxableIncome <= this.maxValue && taxableIncome >= this.minValue)
             return true;
         return false;
     }
+    
 }

@@ -21,9 +21,13 @@ export class DeductionCalculator
     constructor(){
     }
 
-    getDeductionRepository(assessmentYear){
-        switch(assessmentYear)
-        {
+    /**
+     * 
+     * @param assessmentYear 
+     * Given an Assessment Year, returns the respective DeductionRepository.
+     */
+    getDeductionRepository(assessmentYear : number){
+        switch(assessmentYear){
             case 2010 : this.deductionRepository = new DeductionRepository20102011(); break;
             case 2011 : this.deductionRepository = new DeductionRepository20112012(); break;
             case 2012 : this.deductionRepository = new DeductionRepository20122013(); break;
@@ -38,35 +42,40 @@ export class DeductionCalculator
         }
     }
 
-    calculateDeductionAmount(incomeTaxCalculator : FormGroup,grossIncome : number) : number{
-        var assessmentYear : number = incomeTaxCalculator.get('assessmentYear').value =="Select" ? 2020 : incomeTaxCalculator.get('assessmentYear').value;
-
+    /**
+     * 
+     * @param incomeTaxCalculator 
+     * @param grossIncome 
+     * Given Form Controls and grossIncome, Returns the deduction values of each Section based on Assessment Year.
+     */
+    calculateDeductionAmount(incomeTaxCalculator : FormGroup, grossIncome : number) : number {
+        var assessmentYear : number = incomeTaxCalculator.get('assessmentYear').value == "Select" ? 2020 : incomeTaxCalculator.get('assessmentYear').value;
         let formControls = incomeTaxCalculator.get('deductions').value;
         this.getDeductionRepository(assessmentYear);
         var taxsections : Array<TaxSection> = this.deductionRepository.getAllTaxSections();
 
-        let maxLimit80C80CCD : number = 0;
-        let deduction80C : number = 0 ;
+        let deduction80C : number = 0;
         let deduction80CCD : number = 0;
-        let deduction80CCD1B : number = 0 ;
-        let deduction80CCD2 : number = 0 ;
-        let deduction80DD : number = 0 ;
-        let deduction80CCF : number = 0 ;
-        let deduction80U : number = 0 ;
-        let deduction80CCG : number = 0 ;
-        let otherDeductions : number = 0 ;
+        let maxLimit80CCE : number = 0;
+        let deduction80CCD1B : number = 0;
+        let deduction80CCD2 : number = 0;
+        let deduction80DD : number = 0;
+        let deduction80CCF : number = 0;
+        let deduction80U : number = 0;
+        let deduction80CCG : number = 0;
+        let otherDeductions : number = 0;
 
         taxsections.forEach(section => {
-            if(section.name == "80C"){
+            if(section.name == "80C")
                 deduction80C = section.getDeductionValue(formControls);
-                maxLimit80C80CCD = section.maxLimit;
-            }
             else if(section.name == "80CCD")
-                deduction80CCD = section.getDeductionValue(formControls);
+                deduction80CCD = section.getDeductionValueUnderSection80CCD1(formControls, grossIncome);
+            else if(section.name == "80CCE")
+                maxLimit80CCE = section.maxLimit;
             else if(section.name == "80CCD1B")
                 deduction80CCD1B = section.getDeductionValue(formControls);
             else if(section.name == "80CCD2")
-                deduction80CCD2 = section.getDeductionValue(formControls);
+                deduction80CCD2 = section.getDeductionValueUnderSection80CCD2(formControls, grossIncome);
             else if(section.name == "80DD")
                 deduction80DD = section.getDeductionValue(formControls);
             else if(section.name == "80CCF")
@@ -74,25 +83,27 @@ export class DeductionCalculator
             else if(section.name == "80U")
                 deduction80U = section.getDeductionValue(formControls);
             else if(section.name == "80CCG")
-            {
-                if(grossIncome < 1000000)
-                    deduction80CCG = section.getDeductionValue(formControls);
-            }
+                deduction80CCG = section.getDeductionValueUnderSection80CCG(formControls, grossIncome);
             else
                 otherDeductions += section.getDeductionValue(formControls);
         });
-        let total80C : number = Math.min(maxLimit80C80CCD , (deduction80C + deduction80CCD)) + deduction80CCD1B + deduction80CCD2 + deduction80CCF + deduction80CCG ;
-        let totalDeductions : number = total80C + deduction80DD + deduction80U + otherDeductions; 
+        let totalDeductions80C : number = Math.min(maxLimit80CCE, (deduction80C + deduction80CCD)) + deduction80CCD1B + deduction80CCD2 + deduction80CCF + deduction80CCG;
+        let totalDeductions : number = totalDeductions80C + deduction80DD + deduction80U + otherDeductions; 
 
         incomeTaxCalculator.get('deductions').patchValue({
-            Total80C : total80C,
+            total80C : totalDeductions80C,
             medicalDependent80DD : deduction80DD,
             disability80U : deduction80U,
         });
         return totalDeductions;
     }
 
-    getSection24(assessmentYear : number) : TaxSection{
+    /**
+     * 
+     * @param assessmentYear 
+     * Given Assessment Year, Returns TaxSection24
+     */
+    getSection24(assessmentYear : number) : TaxSection {
         this.getDeductionRepository(assessmentYear);
         return this.deductionRepository.getSection24();
     }

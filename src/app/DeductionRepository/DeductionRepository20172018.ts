@@ -9,10 +9,10 @@ export class DeductionRepository20172018 extends DeductionRepository20162017
         super();
     }  
     
-    getSection80EE() : TaxSection{
-        var section80EE : TaxSection = new TaxSection("80EE",50000);
+    getSection80EE() : TaxSection {
+        var section80EE : TaxSection = new TaxSection("80EE", 50000);
         section80EE.deductions.push( 
-            new Deduction ( "80EE", "loanResidentialHouse80EE" ,true,0,null, "Interest on loan taken for Residential House (u/s 80EE)")
+            new Deduction("80EE", "loanResidentialHouse80EE" , 0, null, "Interest on loan taken for Residential House (u/s 80EE)")
         );
         return section80EE;
     }

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup,FormBuilder,FormControl,Validators, FormArray, NumberValueAccessor } from '@angular/forms';
+import { FormGroup, FormBuilder, FormControl, Validators, FormArray} from '@angular/forms';
 import { AssessmentYear } from '../Models/AssessmentYear';
 import { IncomeFromHouseProperty } from '../Models/Income/IncomeFromHouseProperty';
 import { IncomeFromCapitalGains } from '../Models/Income/IncomeFromCapitalGains';
@@ -13,9 +13,10 @@ import { IntersestOnTaxCalculator } from '../Calculation/InterestOnTaxCalculator
   templateUrl: './itcalculation.component.html',
   styleUrls: ['./itcalculation.component.css']
 })
+
 export class ITCalculationComponent implements OnInit {
 
-  categoryValues = ['Male','Female','Senior Citizen','Super Senior Citizen'];
+  categoryValues = ['Male', 'Female', 'Senior Citizen', 'Super Senior Citizen'];
   assessmentYears : AssessmentYear[] = [];
 
   incomeTaxCalculator : FormGroup;
@@ -41,7 +42,7 @@ export class ITCalculationComponent implements OnInit {
   deduction80TTBFlag : boolean = false;
   calculateFlag : boolean = false;
 
-  constructor(private fb : FormBuilder) {   
+  constructor(private fb : FormBuilder){   
     this.initializeAssessmentYears();
     this.incomeFromHouseProp = new IncomeFromHouseProperty();
     this.incomeFromCapital = new IncomeFromCapitalGains();
@@ -54,12 +55,12 @@ export class ITCalculationComponent implements OnInit {
     this.totalDeductions = 0;
   }
 
-  ngOnInit() {
+  ngOnInit(){
     this.initialiseFormFields(); 
-    this.incomeTaxCalculator.get('assessmentYear').valueChanges.subscribe(change =>{
+    this.incomeTaxCalculator.get('assessmentYear').valueChanges.subscribe(change => {
       this.onYearChange();
     });
-    this.incomeTaxCalculator.get('category').valueChanges.subscribe(change =>{
+    this.incomeTaxCalculator.get('category').valueChanges.subscribe(change => {
       this.setDeduction80TTBFlag();
     });
     this.onValueChange();
@@ -69,24 +70,24 @@ export class ITCalculationComponent implements OnInit {
     this.incomeTaxCalculator = this.fb.group(
       {
         assessmentYear : new FormControl("Select"),
-        taxPayer : new FormControl({value : 'Individual' , disabled : true}),
+        taxPayer : new FormControl({value : 'Individual', disabled : true}),
         category : new FormControl("Select"),
-        resdentialStatus : new FormControl({value : 'Resident' , disabled : true}),
+        resdentialStatus : new FormControl({value : 'Resident', disabled : true}),
         income : this.fb.group({
           incomeFromSalary : new FormControl(''),
-          incomeFromHouseProperty : new FormControl({value : '' , disabled : true}),
+          incomeFromHouseProperty : new FormControl({value : '', disabled : true}),
           incomeHouseProperty : this.fb.group({
             interestOnHousingLoanSelfOccupied : new FormControl(''),
-            incomeFromSelfOccupied : new FormControl({value : '' , disabled : true}),
+            incomeFromSelfOccupied : new FormControl({value : '', disabled : true}),
             annaulRentFromLetOut : new FormControl(''),
             municipalTaxesLetOut : new FormControl(''),
             unrealizedRentLetOut : new FormControl(''),
-            netAnnualIncomeFromLetOut : new FormControl({value : '' , disabled : true}),
-            standardDeductionLetOut : new FormControl({value : '' , disabled : true}),
+            netAnnualIncomeFromLetOut : new FormControl({value : '', disabled : true}),
+            standardDeductionLetOut : new FormControl({value : '', disabled : true}),
             interestOnHousingLoanLetOut : new FormControl(''),
-            incomeFromLetOut : new FormControl({value : '' , disabled : true})
+            incomeFromLetOut : new FormControl({value : '', disabled : true})
           }),
-          incomeFromCapitalGains : new FormControl({value : '' , disabled : true}),
+          incomeFromCapitalGains : new FormControl({value : '', disabled : true}),
           incomeCapitalGains : this.fb.group({
             shortTermNormal : this.fb.array([
               new FormControl(''),
@@ -95,7 +96,7 @@ export class ITCalculationComponent implements OnInit {
               new FormControl(''),
               new FormControl('')
             ]),
-            shortTermNormalTotal : new FormControl({value : '' , disabled : true}),
+            shortTermNormalTotal : new FormControl({value : '', disabled : true}),
             shortTermSpecial : this.fb.array([
               new FormControl(''),
               new FormControl(''),
@@ -103,7 +104,7 @@ export class ITCalculationComponent implements OnInit {
               new FormControl(''),
               new FormControl('')
             ]),
-            shortTermSpecialTotal : new FormControl({value : '' , disabled : true}),
+            shortTermSpecialTotal : new FormControl({value : '', disabled : true}),
             longTermSpecial1 : this.fb.array([
               new FormControl(''),
               new FormControl(''),
@@ -111,7 +112,7 @@ export class ITCalculationComponent implements OnInit {
               new FormControl(''),
               new FormControl('')
             ]),
-            longTermSpecial1Total : new FormControl({value : '' , disabled : true}),
+            longTermSpecial1Total : new FormControl({value : '', disabled : true}),
             longTermSpecial2 : this.fb.array([
               new FormControl(''),
               new FormControl(''),
@@ -119,9 +120,9 @@ export class ITCalculationComponent implements OnInit {
               new FormControl(''),
               new FormControl('')
             ]),
-            longTermSpecial2Total : new FormControl({value : '' , disabled : true})
+            longTermSpecial2Total : new FormControl({value : '', disabled : true})
           }),
-          incomeFromOtherSources : new FormControl({value : '' , disabled : true}),
+          incomeFromOtherSources : new FormControl({value : '', disabled : true}),
           incomeOtherSources : this.fb.group({
             interest : new FormControl(''),
             commission : new FormControl(''),
@@ -130,7 +131,7 @@ export class ITCalculationComponent implements OnInit {
           incomeFromProfits : new FormControl(''),
           incomeFromAgriculture : new FormControl('')
         }),
-        deductionsTotal : new FormControl({value : '' , disabled : true}),
+        deductionsTotal : new FormControl({value : '', disabled : true}),
         deductions : this.fb.group({
           lifeInsurance : new FormControl(''),
           annuity : new FormControl(''),
@@ -149,57 +150,60 @@ export class ITCalculationComponent implements OnInit {
           equity : new FormControl(''),
           sukanyaSamridhi : new FormControl(''),
           other80C : new FormControl(''),
-          Total80C : new FormControl({value : '' , disabled : true}),
+          total80C : new FormControl({value : '', disabled : true}),
           medicalClaim80D : new FormControl(''),
           medicalPayment80DDB : new FormControl(''),
           interestOnHouseLoan : new FormControl(''),
           interestOnElectricVehicle : new FormControl(''),
           donations80G : new FormControl(''),
-          medicalDependent80DD : new FormControl({value : '' , disabled : true}),
+          medicalDependent80DD : new FormControl({value : '', disabled : true}),
           normal80DD : new FormControl(''),
           severe80DD : new FormControl(''),
           higherEducation80E : new FormControl(''),
           loanResidentialHouse80EE : new FormControl(''),
-          disability80U : new FormControl({value : '' , disabled : true}),
+          disability80U : new FormControl({value : '', disabled : true}),
           normal80U : new FormControl(''),
           severe80U : new FormControl(''),
           interestOnDeposits80TTA : new FormControl(''),
           interestOnDeposits80TTB : new FormControl(''),
           otherDeductions : new FormControl('')
         }),
-        netTaxableIncome : new FormControl({value : '' , disabled : true}),
-        normalTaxableIncome : new FormControl({value : '' , disabled : true}),
-        normalTax : new FormControl({value : '' , disabled : true}),
+        netTaxableIncome : new FormControl({value : '', disabled : true}),
+        normalTaxableIncome : new FormControl({value : '', disabled : true}),
+        normalTax : new FormControl({value : '', disabled : true}),
         taxSpecailRate : this.fb.group({
-          shortTermCapitalGainsSpecialTotal : new FormControl({value : '' , disabled : true}),
-          taxShortTermCapitalGainsSpecial : new FormControl({value : '' , disabled : true}),
-          longTermCapitalGainsSpecial1Total : new FormControl({value : '' , disabled : true}),
-          taxLongTermCapitalGainsSpecial1 : new FormControl({value : '' , disabled : true}),
-          longTermCapitalGainsSpecial2Total : new FormControl({value : '' , disabled : true}),
-          taxLongTermCapitalGainsSpecial2 : new FormControl({value : '' , disabled : true}),
-          winningsFromLotteryTotal : new FormControl({value : '' , disabled : true}),
-          taxWinningsFromLottery : new FormControl({value : '' , disabled : true}),
+          shortTermCapitalGainsSpecialTotal : new FormControl({value : '', disabled : true}),
+          taxShortTermCapitalGainsSpecial : new FormControl({value : '', disabled : true}),
+          longTermCapitalGainsSpecial1Total : new FormControl({value : '', disabled : true}),
+          taxLongTermCapitalGainsSpecial1 : new FormControl({value : '', disabled : true}),
+          longTermCapitalGainsSpecial2Total : new FormControl({value : '', disabled : true}),
+          taxLongTermCapitalGainsSpecial2 : new FormControl({value : '', disabled : true}),
+          winningsFromLotteryTotal : new FormControl({value : '', disabled : true}),
+          taxWinningsFromLottery : new FormControl({value : '', disabled : true}),
         }),
-        taxAfterRebate : new FormControl({value : '' , disabled : true}),
-        surCharge : new FormControl({value : '' , disabled : true}),
-        educationCESS : new FormControl({value : '' , disabled : true}),
-        secondaryCESS : new FormControl({value : '' , disabled : true}),
-        totalTax : new FormControl({value : '' , disabled : true}),
-        returnDueDate : new FormControl('',Validators.required),
-        returnCompletionDate : new FormControl('',Validators.required),
+        taxAfterRebate : new FormControl({value : '', disabled : true}),
+        surCharge : new FormControl({value : '', disabled : true}),
+        educationCESS : new FormControl({value : '', disabled : true}),
+        secondaryCESS : new FormControl({value : '', disabled : true}),
+        totalTax : new FormControl({value : '', disabled : true}),
+        returnDueDate : new FormControl('', Validators.required),
+        returnCompletionDate : new FormControl('', Validators.required),
         relief : new FormControl(''),
         TDS : new FormControl(''),
         taxPaid : this.fb.array([
           this.getTaxPaidFormGroup()
         ]),
-        interest234A : new FormControl({value : '' , disabled : true}),
-        interest234B : new FormControl({value : '' , disabled : true}),
-        interest234C : new FormControl({value : '' , disabled : true})
+        interest234A : new FormControl({value : '', disabled : true}),
+        interest234B : new FormControl({value : '', disabled : true}),
+        interest234C : new FormControl({value : '', disabled : true})
       }
-    )
+    );
   }
 
-  getTaxPaidFormGroup() : FormGroup{
+  /**
+   * Tax Details Paid Form Array
+   */
+  getTaxPaidFormGroup() : FormGroup {
     return this.fb.group({
       date : new FormControl(''),
       amount : new FormControl('')
@@ -226,13 +230,16 @@ export class ITCalculationComponent implements OnInit {
   }
 
   initializeAssessmentYears(){
-    for(let i=0;i<=10;i++){
-      this.assessmentYears.push({ yearid : 2000+(20-i), year: "20"+(20-i)+"-"+(21-i) });
+    for(let i = 0; i <= 10; i++){
+      this.assessmentYears.push({yearid : 2000 + (20 - i), year: "20" + (20 - i) + "-" + (21 - i)});
     }
   }
 
+  /**
+   * Category Flag For Displaying the Option of Super Senior Citizen from AY 2012-13  
+   */
   setCategoryFlag(){
-    if(this.assessmentYear<=2011 && this.categoryFlag == true){
+    if(this.assessmentYear <= 2011 && this.categoryFlag == true){
       this.categoryValues.pop();
       this.categoryFlag = false;
       if(this.incomeTaxCalculator.get('category').value == "Super Senior Citizen" )
@@ -240,7 +247,7 @@ export class ITCalculationComponent implements OnInit {
           category : "Senior Citizen"
         });
     }
-    else if(this.assessmentYear>2011 && this.categoryFlag == false){
+    else if(this.assessmentYear > 2011 && this.categoryFlag == false){
       this.categoryValues.push("Super Senior Citizen");
       this.categoryFlag = true;
     }
@@ -248,7 +255,7 @@ export class ITCalculationComponent implements OnInit {
 
   incomeFromHouseProperty(){
     this.incomeFromHouseProp = Object.assign(this.incomeFromHouseProp, this.incomeTaxCalculator.get('income').get('incomeHouseProperty').value);
-    this.incomeFromHouseProp.runResults(this.assessmentYear);
+    this.incomeFromHouseProp.computeHouseIncomeDetails(this.assessmentYear);
     this.incomeTaxCalculator.get('income').get('incomeHouseProperty').patchValue({
       incomeFromSelfOccupied : this.incomeFromHouseProp.incomeFromSelfOccupied,
       netAnnualIncomeFromLetOut : this.incomeFromHouseProp.netAnnualIncomeFromLetOut,
@@ -258,8 +265,11 @@ export class ITCalculationComponent implements OnInit {
     this.incomeTaxCalculator.get('income').patchValue({incomeFromHouseProperty : this.incomeFromHouseProp.incomeAtNormalRate});
   }
 
+  /**
+   * Capital Gains Flag for changing the dates of capital gains based on Assessment Year
+   */
   setCapitalGainsFlag(){
-    if(this.assessmentYear<=2016)
+    if(this.assessmentYear <= 2016)
     {
       if(this.capitalGainsFlag == true)
         this.incomeTaxCalculator.get('income').get('incomeCapitalGains').reset({});
@@ -276,38 +286,38 @@ export class ITCalculationComponent implements OnInit {
   }
 
   incomeFromOtherSources(){
-    this.incomeFromOtherSource = Object.assign(this.incomeFromOtherSource,this.incomeTaxCalculator.get('income').get('incomeOtherSources').value);
+    this.incomeFromOtherSource = Object.assign(this.incomeFromOtherSource, this.incomeTaxCalculator.get('income').get('incomeOtherSources').value);
     this.incomeTaxCalculator.get('income').patchValue({
       incomeFromOtherSources : this.incomeFromOtherSource.categorizeIncome()
     });
   }
 
   calculateGrossIncome(){
-    this.totalNormalIncome = +this.incomeFromHouseProp.incomeAtNormalRate + +this.incomeFromCapital.incomeAtNormalRate + +this.incomeFromOtherSource.incomeAtNormalRate + +this.incomeTaxCalculator.get('income').get('incomeFromSalary').value +  +this.incomeTaxCalculator.get('income').get('incomeFromProfits').value;
+    this.totalNormalIncome = +this.incomeFromHouseProp.incomeAtNormalRate + +this.incomeFromCapital.incomeAtNormalRate + +this.incomeFromOtherSource.incomeAtNormalRate + +this.incomeTaxCalculator.get('income').get('incomeFromSalary').value + +this.incomeTaxCalculator.get('income').get('incomeFromProfits').value;
     this.totalSpecialIncome = +this.incomeFromHouseProp.incomeAtSpecialRate + +this.incomeFromCapital.incomeAtSpecialRate + +this.incomeFromOtherSource.incomeAtSpecialRate;
-    this.totalIncome = +this.incomeFromHouseProp.incomeTotal + +this.incomeFromCapital.incomeTotal + +this.incomeFromOtherSource.incomeTotal + +this.incomeTaxCalculator.get('income').get('incomeFromSalary').value +  +this.incomeTaxCalculator.get('income').get('incomeFromProfits').value;
+    this.totalIncome = +this.incomeFromHouseProp.incomeTotal + +this.incomeFromCapital.incomeTotal + +this.incomeFromOtherSource.incomeTotal + +this.incomeTaxCalculator.get('income').get('incomeFromSalary').value + +this.incomeTaxCalculator.get('income').get('incomeFromProfits').value;
   }
 
   setDeduction80TTBFlag(){
-    if((this.category == "Senior Citizen"||this.category == "Super Senior Citizen") && this.assessmentYear>=2019)
+    if((this.category == "Senior Citizen" || this.category == "Super Senior Citizen") && this.assessmentYear >= 2019)
       this.deduction80TTBFlag = true;
     else 
       this.deduction80TTBFlag = false;
   }
 
   deductions(){
-    this.totalDeductions = this.deductionCalculator.calculateDeductionAmount(this.incomeTaxCalculator,this.totalIncome);
+    this.totalDeductions = this.deductionCalculator.calculateDeductionAmount(this.incomeTaxCalculator, this.totalIncome);
     this.incomeTaxCalculator.patchValue({
       deductionsTotal : this.totalDeductions
     });
   }
 
   computeTaxableIncome(){
-    this.netTaxableIncome = this.totalIncome - +this.totalDeductions ;
+    this.netTaxableIncome = this.totalIncome - +this.totalDeductions;
     if(this.netTaxableIncome < 0) 
       this.netTaxableIncome = 0;
     this.incomeTaxCalculator.patchValue({
-      netTaxableIncome :  this.netTaxableIncome
+      netTaxableIncome : this.netTaxableIncome
     });
 
     let totalNormalIncomeAfterDeductions : number = this.totalNormalIncome - +this.totalDeductions;
@@ -319,7 +329,7 @@ export class ITCalculationComponent implements OnInit {
   }
 
   applyIncomeTaxSlab(){
-    this.taxCalculator.taxLiableAtNormalRate = this.taxCalculator.calculateNormalTax(this.totalNormalIncome,this.assessmentYear,this.incomeTaxCalculator.get('income').get('incomeFromAgriculture').value,this.category);
+    this.taxCalculator.taxLiableAtNormalRate = this.taxCalculator.calculateNormalTax(this.totalNormalIncome, this.assessmentYear, this.incomeTaxCalculator.get('income').get('incomeFromAgriculture').value, this.category);
     this.incomeTaxCalculator.patchValue({
       normalTax : this.taxCalculator.taxLiableAtNormalRate
     });
@@ -327,18 +337,18 @@ export class ITCalculationComponent implements OnInit {
   }
 
   specialIncomeTaxes(){
-    this.taxCalculator.calculateSpecialTax(this.incomeFromCapital,this.incomeFromOtherSource,this.incomeTaxCalculator);
+    this.taxCalculator.calculateSpecialTax(this.incomeFromCapital, this.incomeFromOtherSource, this.incomeTaxCalculator);
   }
 
   computeTaxAfterRebate(){
     this.taxCalculator.taxLiableAtSpecialRate = this.incomeFromCapital.incomeAtSpecialRate + this.incomeFromOtherSource.incomeAtSpecialRate;
     this.incomeTaxCalculator.patchValue({
-      taxAfterRebate :  this.taxCalculator.calculateTaxAfterRebate(this.netTaxableIncome,this.assessmentYear)
+      taxAfterRebate :  this.taxCalculator.calculateTaxAfterRebate(this.netTaxableIncome, this.assessmentYear)
     });
   }
 
   computeSurcharge(){
-    this.taxCalculator.surcharge = this.taxCalculator.calculateSurcharge(this.totalNormalIncome,this.category);
+    this.taxCalculator.surcharge = this.taxCalculator.calculateSurcharge(this.totalNormalIncome, this.category);
     this.incomeTaxCalculator.patchValue({
       surCharge : this.taxCalculator.surcharge
     });
@@ -370,11 +380,11 @@ export class ITCalculationComponent implements OnInit {
   }
   
   get assessmentYear(){
-    return this.incomeTaxCalculator.get('assessmentYear').value =="Select" ? 2020 : this.incomeTaxCalculator.get('assessmentYear').value;
+    return this.incomeTaxCalculator.get('assessmentYear').value == "Select" ? 2020 : this.incomeTaxCalculator.get('assessmentYear').value;
   }
 
   get category(){
-    return this.incomeTaxCalculator.get('category').value =="Select" ? "Male" : this.incomeTaxCalculator.get('category').value;
+    return this.incomeTaxCalculator.get('category').value == "Select" ? "Male" : this.incomeTaxCalculator.get('category').value;
   }
 
 }
